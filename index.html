@@ -6,142 +6,97 @@
 <title>Tareas</title>
 
 <style>
-:root {
-  --bg: #f4f5f7;
-  --card: #fafafa;
-  --border: #e6e7eb;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --accent: #111827;
-  --highlight: #f1f5f9; /* 👈 neutro */
+:root{
+  --bg:#f4f5f7;
+  --card:#fafafa;
+  --border:#e6e7eb;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --accent:#111827;
+  --important:#fb923c;
+  --important-bg:#fff7ed;
 }
 
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
-  background: var(--bg);
-  color: var(--text);
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;background:var(--bg)}
+
+.app{max-width:520px;margin:auto;height:100vh;display:flex;flex-direction:column}
+
+.header{padding:12px;background:var(--card);border-bottom:1px solid var(--border)}
+.tabs{display:flex;justify-content:center;gap:10px}
+.tab{padding:6px 12px;border-radius:8px;color:var(--muted);cursor:pointer}
+.tab.active{background:var(--border);color:var(--text)}
+
+.inputBar{display:flex;gap:8px;padding:12px;background:var(--card);border-bottom:1px solid var(--border)}
+.inputBar input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border)}
+.inputBar button{padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff}
+
+.list{flex:1;overflow:auto;padding:12px;position:relative}
+.list:after{
+  content:"";
+  position:sticky;
+  bottom:0;
+  height:30px;
+  display:block;
+  background:linear-gradient(transparent,var(--bg));
 }
 
-.app {
-  max-width: 520px;
-  margin: auto;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.item{
+  position:relative;
+  background:var(--card);
+  border-radius:12px;
+  padding:6px 8px 6px 18px;
+  margin-bottom:8px;
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  cursor:grab;
+  transition:background .2s ease;
 }
 
-.header {
-  padding: 16px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--border);
-  background: var(--card);
+.item::before{
+  content:"";
+  position:absolute;
+  left:6px;
+  top:8px;
+  bottom:8px;
+  width:6px;
+  background-image:radial-gradient(var(--muted) 1px, transparent 1px);
+  background-size:4px 4px;
+  opacity:.25;
 }
 
-.inputBar {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--card);
-}
+.item.dragging{opacity:.5}
 
-.inputBar input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-}
+.item span{flex:1;font-size:13px;outline:none}
+.item.done span{text-decoration:line-through;color:var(--muted)}
+.item.important{background:var(--important-bg)}
 
-.inputBar button {
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
-}
+.pin{width:10px;height:10px;background:var(--muted);border-radius:50%;cursor:pointer}
 
-.list {
-  padding: 12px;
-  background: #eeeeee;
+.importantDot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--important);
+  opacity:.4;cursor:pointer;
 }
+.importantDot.active{opacity:1}
 
-.item {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 6px 8px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  cursor: grab;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  transition: background 0.25s ease, opacity 0.2s ease;
+.delete{opacity:0;cursor:pointer}
+.item:hover .delete{opacity:.4}
+
+.footer{
+  position:sticky;
+  bottom:0;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  padding:12px;
+  display:flex;
+  gap:8px;
 }
-
-.item.new {
-  background: var(--highlight);
-}
-
-.item.done span {
-  text-decoration: line-through;
-  color: var(--muted);
-  transition: all 0.2s ease;
-}
-
-.item span {
-  flex: 1;
-  outline: none;
-  font-size: 13px;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.pin {
-  cursor: pointer;
-  opacity: 0.4;
-}
-
-.pin.active {
-  opacity: 1;
-}
-
-.delete {
-  cursor: pointer;
-  opacity: 0;
-}
-
-.item:hover .delete {
-  opacity: 0.5;
-}
-
-.delete:hover {
-  opacity: 1;
-}
-
-.item.removing {
-  opacity: 0;
-}
-
-.footer {
-  margin-top: auto;
-  padding: 12px;
-  display: flex;
-  gap: 8px;
-  border-top: 1px solid var(--border);
-  background: var(--card);
-}
-
-.footer button {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
+.footer button{
+  flex:1;padding:10px;border-radius:10px;
+  border:1px solid var(--border);background:#fff;
 }
 </style>
 </head>
@@ -149,164 +104,192 @@ body {
 <body>
 
 <div class="app">
-  <div class="header">Tareas</div>
 
-  <div class="inputBar">
-    <input id="input" placeholder="Nueva tarea" autofocus>
-    <button onclick="add()">+</button>
-  </div>
-
-  <div id="list" class="list"></div>
-
-  <div class="footer">
-    <button onclick="clearDone()">Borrar completadas</button>
-    <button onclick="clearAll()">Limpiar</button>
+<div class="header">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('trabajo',this)">Trabajo</div>
+    <div class="tab" onclick="switchTab('pendientes',this)">Pendientes</div>
   </div>
 </div>
 
+<div class="inputBar">
+  <input id="input" placeholder="Nueva tarea">
+  <button onclick="add()">+</button>
+</div>
+
+<div id="list" class="list"></div>
+
+<div class="footer">
+  <button onclick="clearDone()">Borrar completadas</button>
+  <button onclick="clearAll()">Limpiar</button>
+</div>
+
+</div>
+
 <script>
-let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-let lastAddedIndex = null;
+let data=JSON.parse(localStorage.getItem("tasks_full")||'{"trabajo":[],"pendientes":[]}');
+let current="trabajo";
+let dragEl=null;
 
-const input = document.getElementById("input");
+const input=document.getElementById("input");
 
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") add();
+input.addEventListener("keydown",e=>{
+  if(e.key==="Enter") add();
 });
 
-window.onload = () => input.focus();
+function focusInput(){ setTimeout(()=>input.focus(),0); }
 
-function save() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+function save(){
+  localStorage.setItem("tasks_full",JSON.stringify(data));
 }
 
-function add() {
-  const text = input.value.trim();
-  if (!text) return;
+function switchTab(tab,el){
+  current=tab;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  render();
+  focusInput();
+}
 
-  tasks.push({ text, done: false, pinned: false });
-  lastAddedIndex = tasks.length - 1;
+function add(){
+  const text=input.value.trim();
+  if(!text) return;
 
-  input.value = "";
+  data[current].unshift({text,done:false,important:false});
+  input.value="";
+  save();
+  render();
+  focusInput();
+}
+
+function toggle(i){
+  data[current][i].done=!data[current][i].done;
   save();
   render();
 }
 
-function toggle(i) {
-  tasks[i].done = !tasks[i].done;
+function toggleImportant(i){
+  data[current][i].important=!data[current][i].important;
   save();
   render();
 }
 
-function togglePin(i) {
-  tasks[i].pinned = !tasks[i].pinned;
+function pinTop(i){
+  const t=data[current].splice(i,1)[0];
+  data[current].unshift(t);
   save();
   render();
 }
 
-function removeTask(i, el) {
-  el.classList.add("removing");
-  setTimeout(() => {
-    tasks.splice(i, 1);
+function removeTask(i){
+  data[current].splice(i,1);
+  save();
+  render();
+}
+
+function clearDone(){
+  data[current]=data[current].filter(t=>!t.done);
+  save();
+  render();
+}
+
+function clearAll(){
+  data[current]=[];
+  save();
+  render();
+}
+
+/* ENTER EN EDICIÓN */
+function handleEditKey(e,i,el){
+  if(e.key==="Enter"){
+    e.preventDefault();
+
+    const text=el.innerText.trim();
+    if(text) data[current][i].text=text;
+
     save();
-    render();
-  }, 180);
+    el.blur();
+    focusInput();
+  }
 }
 
-function edit(i, el) {
-  const t = el.innerText.trim();
-  if (t) tasks[i].text = t;
-  save();
+/* DRAG */
+function onDragStart(e){
+  dragEl=e.currentTarget;
+  dragEl.classList.add("dragging");
 }
 
-function clearAll() {
-  tasks = [];
-  save();
-  render();
+function onDragOver(e){
+  e.preventDefault();
+  const list=document.getElementById("list");
+  const after=getAfter(list,e.clientY);
+
+  if(after==null) list.appendChild(dragEl);
+  else list.insertBefore(dragEl,after);
 }
 
-function clearDone() {
-  tasks = tasks.filter(t => !t.done);
-  save();
-  render();
-}
+function onDragEnd(){
+  dragEl.classList.remove("dragging");
 
-let dragEl = null;
+  const nodes=[...document.querySelectorAll(".item")];
 
-function handleDragStart(e) {
-  dragEl = e.currentTarget;
-}
-
-function handleDragEnd() {
-  const nodes = [...document.querySelectorAll(".item")];
-
-  tasks = nodes.map(node => ({
-    text: node.querySelector("span").innerText,
-    done: node.querySelector("input").checked,
-    pinned: node.querySelector(".pin").classList.contains("active")
+  data[current]=nodes.map(n=>({
+    text:n.querySelector("span").innerText,
+    done:n.querySelector("input").checked,
+    important:n.querySelector(".importantDot").classList.contains("active")
   }));
 
   save();
   render();
 }
 
-function handleDragOver(e) {
-  e.preventDefault();
-  const container = document.getElementById("list");
-  const after = getAfter(container, e.clientY);
+function getAfter(container,y){
+  const els=[...container.querySelectorAll(".item:not(.dragging)")];
 
-  if (!after) container.appendChild(dragEl);
-  else container.insertBefore(dragEl, after);
-}
+  return els.reduce((closest,el)=>{
+    const box=el.getBoundingClientRect();
+    const offset=y-box.top-box.height/2;
 
-function getAfter(container, y) {
-  const els = [...container.querySelectorAll(".item:not(.dragging)")];
-
-  return els.reduce((closest, el) => {
-    const box = el.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-
-    if (offset < 0 && offset > closest.offset) {
-      return { offset, element: el };
-    } else {
+    if(offset<0 && offset>closest.offset){
+      return {offset,element:el};
+    }else{
       return closest;
     }
-  }, { offset: -Infinity }).element;
+  },{offset:-Infinity}).element;
 }
 
-function render() {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+function render(){
+  const list=document.getElementById("list");
+  list.innerHTML="";
 
-  tasks.forEach((t, i) => {
-    const div = document.createElement("div");
-    div.className = "item";
-    if (t.done) div.classList.add("done");
+  data[current].forEach((t,i)=>{
+    const div=document.createElement("div");
+    div.className="item";
+    if(t.done) div.classList.add("done");
+    if(t.important) div.classList.add("important");
 
-    if (i === lastAddedIndex) {
-      div.classList.add("new");
-      setTimeout(() => div.classList.remove("new"), 300);
-    }
+    div.draggable=true;
+    div.ondragstart=onDragStart;
+    div.ondragover=onDragOver;
+    div.ondragend=onDragEnd;
 
-    div.draggable = true;
-    div.addEventListener("dragstart", handleDragStart);
-    div.addEventListener("dragend", handleDragEnd);
-    div.addEventListener("dragover", handleDragOver);
-
-    div.innerHTML = `
-      <input type="checkbox" ${t.done ? "checked":""} onchange="toggle(${i})">
-      <span contenteditable="true" onblur="edit(${i}, this)">${t.text}</span>
-      <div class="pin ${t.pinned ? "active":""}" onclick="togglePin(${i})">📌</div>
-      <div class="delete" onclick="removeTask(${i}, this.parentElement)">×</div>
+    div.innerHTML=`
+      <input type="checkbox" ${t.done?"checked":""} onchange="toggle(${i})">
+      <span contenteditable
+        onblur="data[current][${i}].text=this.innerText;save()"
+        onkeydown="handleEditKey(event, ${i}, this)"
+      >${t.text}</span>
+      <div class="pin" onclick="pinTop(${i})"></div>
+      <div class="importantDot ${t.important?"active":""}" onclick="toggleImportant(${i})"></div>
+      <div class="delete" onclick="removeTask(${i})">×</div>
     `;
 
     list.appendChild(div);
   });
-
-  lastAddedIndex = null;
 }
 
 render();
+focusInput();
 </script>
 
 </body>
